@@ -130,6 +130,15 @@ class SavingsAccount : public BankAccount {
         double AnnualPercent;
 
     public:
+        SavingsAccount(size_t id, Currency currency, double balance, string dateOfCreation, double annualPrc) {
+            if (balance < 0) { cerr << "Баланс не может быть отрицательным" << endl; exit(1); }
+            this->id = id;
+            this->AccCurrency = currency;
+            this->AnnualPercent = annualPrc;
+            this->Balance = balance;
+            this->DateCreated = dateOfCreation;
+        }
+
         void doProfit(void) {
             CHECK_ACTIVE_ACCOUNT
             double amount = this->AnnualPercent * this->Balance;
@@ -152,6 +161,15 @@ class CheckingAccount : public BankAccount {
         double Fee;
 
     public:
+        CheckingAccount(size_t id, Currency currency, double balance, string dateOfCreation, double fee) {
+            if (balance < 0) { cerr << "Баланс не может быть отрицательным" << endl; exit(1); }
+            this->id = id;
+            this->Fee = fee;
+            this->AccCurrency = currency;
+            this->Balance = balance;
+            this->DateCreated = dateOfCreation;
+        }
+
         void withdraw(double amount) override {
                 CHECK_ACTIVE_ACCOUNT
                 if (this->withdrawAllowed(amount * (1 + this->Fee))) {
@@ -181,7 +199,7 @@ class CheckingAccount : public BankAccount {
 
 int main(void) {
 
-    
+
 
     return 0;
 }
