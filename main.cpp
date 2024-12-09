@@ -4,6 +4,11 @@
 #include <format>
 #include <chrono>
 
+#define HANDLE_ERROR(msg) cerr << (msg) << endl; exit(1);
+#define NoMONEY HANDLE_ERROR("Недостаточно средств")
+#define NonACTIVE HANDLE_ERROR("Аккаунт неактивен")
+#define CHECK_ACTIVE_ACCOUNT if (!this->isActive()) { NonACTIVE; }
+
 using namespace std;
 
 enum Currency {
