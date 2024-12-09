@@ -52,10 +52,17 @@ class Transaction {
 
     private:
 
-        size_t id;
-        TransactionType Ttype;
-        double Amount;
-        string Tdate = format("{:%F %T}", chrono::system_clock::now());
+        const size_t id;
+        const TransactionType Ttype;
+        const double Amount;
+        const string Tdate = format("{:%F %T}", chrono::system_clock::now());
+
+    public:
+
+        size_t getID(void) const { return this->id; }
+        TransactionType getType(void) const { return this->Ttype; }
+        double getAmount(void) const { return this->Amount; }
+        string getDate(void) const {return this->Tdate; }
 };
 
 
@@ -64,31 +71,49 @@ class BankAccount {
 
     protected:
 
-        size_t id;
-        Currency ACcurrency;
+        const size_t id;
+        const Currency ACcurrency;
         double Balance;
         vector<Transaction> TransactionsList;
-        string DateCreated = format("{:%F %T}", chrono::system_clock::now());
+        const string DateCreated = format("{:%F %T}", chrono::system_clock::now());
         bool IsActive = true;
+
+    public:
+
+        size_t getID(void) const { return this->id; }
+        Currency getCurrency(void) const { return this->ACcurrency; }
+        double getBalance(void) const { return this->Balance; }
+        vector<Transaction> getTransactions(void) const {return this->TransactionsList; }
+        string getDateCreated(void) const { return this->DateCreated; }
+        bool isActive(void) const { return this->IsActive; }  
 };
 
 
 
-class SavingsAccount : BankAccount {
+class SavingsAccount : public BankAccount {
 
     private:
 
         double AnnualPercent;
+
+    public:
+
+        double getAnnualsPercentInfo(void) const { return this-> AnnualPercent; }
 };
 
 
 
-class Checkingaccount : BankAccount {
+class Checkingaccount : public BankAccount {
 
     private:
 
         double WFee;
-        size_t FreeWithdraws;
+        size_t FreeWithdrawsLeft;
+
+    public:
+
+        double getFeeInfo(void) const { return this-> WFee; }
+        size_t FreeWLeft(void) const {return this->FreeWithdrawsLeft; }
 };
 
 
@@ -97,14 +122,25 @@ class Customer {
 
     private:
 
-        size_t id;
+        const size_t id;
         string Name, Surname;
         long Phone;
         string Email;
         string Address;
-        string DateOfBirth;
+        const string DateOfBirth;
         bool IsVIP = false;
         vector<BankAccount> Accounts;
+
+    public:
+
+        size_t getID(void) const { return this->id; }
+        string getName(void) const { return (this->Name + this->Surname); }
+        long getPhone(void) const { return this->Phone; }
+        string getEmail(void) const { return this->Email; }
+        string getAddredd(void) const { return this->Address; }
+        string getDateBirth(void) const { return this-> DateOfBirth; }
+        bool isVIP(void) const { return this-> IsVIP; }
+        vector<BankAccount> getAccounts(void) const { return this->Accounts; }
 };
 
 
