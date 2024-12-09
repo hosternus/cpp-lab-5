@@ -74,6 +74,25 @@ class BankAccount {
 
 
 
+class SavingsAccount : BankAccount {
+
+    private:
+
+        double AnnualPercent;
+};
+
+
+
+class Checkingaccount : BankAccount {
+
+    private:
+
+        double WFee;
+        size_t FreeWithdraws;
+};
+
+
+
 class Customer {
 
     private:
