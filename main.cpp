@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <format>
+#include <chrono>
 
 using namespace std;
 
@@ -44,6 +47,47 @@ ostream& operator<<(ostream& out, const TransactionType type) {
 }
 
 
-int main(void) {
-    return 0;
-}
+
+class Transaction {
+
+    private:
+
+        size_t id;
+        TransactionType Ttype;
+        double Amount;
+        string Tdate = format("{:%F %T}", chrono::system_clock::now());
+};
+
+
+
+class BankAccount {
+
+    protected:
+
+        size_t id;
+        Currency ACcurrency;
+        double Balance;
+        vector<Transaction> TransactionsList;
+        string DateCreated = format("{:%F %T}", chrono::system_clock::now());
+        bool IsActive = true;
+};
+
+
+
+class Customer {
+
+    private:
+
+        size_t id;
+        string Name, Surname;
+        long Phone;
+        string Email;
+        string Address;
+        string DateOfBirth;
+        bool IsVIP = false;
+        vector<BankAccount> Accounts;
+};
+
+
+
+int main(void) { return 0; }
