@@ -66,12 +66,20 @@ class Transaction {
         const TransactionType Ttype;
         const double Amount;
         const string Tdate;
+        const Currency Tcurrency;
 
     public:
 
-        Transaction(TransactionType type, double amount) : id(IDGenerator()), Ttype(type), Amount(amount), Tdate(format("{:%F %T}", chrono::system_clock::now())) {}
+        Transaction(TransactionType type, double amount, Currency currency) : id(IDGenerator()), Ttype(type), Amount(amount), Tdate(format("{:%F %T}", chrono::system_clock::now())), Tcurrency(currency) {}
 
-        void quickView(void) const { cout << this->Ttype << 't' << this->Amount << endl; }
+        void show(void) const {
+            cout << "************TRANSACTION INFO************" << endl;
+            cout << "***********  " << this->Ttype << "  ***********" << endl;
+            cout << "** " << "Номер транзакции: " << this->id << endl;
+            cout << "** " << "Сумма: " << this->Amount << " " << this->Tcurrency << endl;
+            cout << "** " << "Дата: " << this->Tdate << endl;
+            cout << "****************************************" << endl;
+        }
 
         size_t getID(void) const { return this->id; }
         TransactionType getType(void) const { return this->Ttype; }
