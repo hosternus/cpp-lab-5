@@ -43,7 +43,7 @@ enum TransactionType {
 
 ostream& operator<<(ostream& out, const TransactionType type) {
     switch (type) {
-        case TransactionType::Deposit: return out << "Деопзит";
+        case TransactionType::Deposit: return out << "Депозит";
         case TransactionType::AnnualPercents: return out << "Начисление годовых";
         case TransactionType::Withdraw: return out << "Вывод средств";
         case TransactionType::Fee: return out << "Комиссия";
@@ -109,7 +109,16 @@ class BankAccount {
         double getBalance(void) const { return this->Balance; }
         vector<Transaction> getTransactions(void) const {return this->TransactionsList; }
         string getDateCreated(void) const { return this->DateCreated; }
-        bool isActive(void) const { return this->IsActive; }  
+        bool isActive(void) const { return this->IsActive; }
+
+        virtual void show(void) const = 0;
+
+        void deactivateAccount(void) {
+            this->IsActive = false;
+            cout << "********************************" << endl;
+            cout << "*** " << "Аккаунт " << this->id << " деактивирован" << " ***" << endl;
+            cout << "********************************" << endl;
+        }
 };
 
 
@@ -125,6 +134,15 @@ class SavingsAccount : public BankAccount {
         SavingsAccount(Currency currency, double balance, float annualsP) : BankAccount(currency, balance), AnnualPercent(annualsP) {}
 
         double getAnnualsPercentInfo(void) const { return this->AnnualPercent; }
+
+        void show(void) const override {
+            cout << "********SAVINGS ACCOUNT********" << endl;
+            cout << "** " << "Номер: " << this->id << endl;
+            cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
+            cout << "** " << "Годовые: " << this->AnnualPercent << " (" << this->Balance * this->AnnualPercent / 12.f << this->ACcurrency << " в месяц)" << endl;
+            cout << "** " << "Открыт: " << this->DateCreated << endl;
+            cout << "*******************************" << endl;
+        }
 };
 
 
