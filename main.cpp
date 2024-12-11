@@ -137,7 +137,7 @@ class Customer {
     private:
 
         const size_t id;
-        string Name, Surname;
+        const string Name, Surname;
         long Phone;
         string Email;
         string Address;
@@ -157,11 +157,35 @@ class Customer {
 
         bool removeAccount() {}
 
-        bool printCustomerInfo() const {}
+        void showCustomerInfo(void) const {
+            cout << "******************CUSTOMER INFO******************" << endl;
+            cout << "** " <<this->Name << " " << this->Surname << endl;
+            cout << "** " << this->Phone << endl;
+            cout << "** " << this->Email << endl;
+            cout << "** " << this->Address << endl;
+            cout << "** " << this->DateOfBirth << endl;
+            cout << "** " << (this->IsVIP?"VIP":"nonVIP") << endl;
+            cout << "*************************************************" << endl;
+        }
 
-        bool markAsVIP() {}
+        void markAsVIP(void) {
+            this->IsVIP = true;
+            cout << "*******CUSTOMER STATUS*******" << endl;
+            cout << "** " << "Клиент № " << this->id << " теперь VIP" << endl;
+            cout << "******************************" << endl;
+        }
 
-        bool updateContactInfo() {}
+        void updateContactInfo(long phone, string email, string address) {
+            this->Phone = phone;
+            this->Email = email;
+            this->Address = address;
+            cout << "*******CUSTOMER DETAILS UPDATED*******" << endl;
+            cout << "** " << "Номер клиента: " << this->id << endl;
+            cout << "** " << "Телефон: " << this->Phone << endl;
+            cout << "** " << "Почта: " << this->Email << endl;
+            cout << "** " << "Адрес: " << this->Address << endl;
+            cout << "**************************************" << endl;
+        }
 
         size_t getID(void) const { return this->id; }
         string getName(void) const { return (this->Name + this->Surname); }
