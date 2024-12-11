@@ -65,9 +65,13 @@ class Transaction {
         const size_t id;
         const TransactionType Ttype;
         const double Amount;
-        const string Tdate = format("{:%F %T}", chrono::system_clock::now());
+        const string Tdate;
 
     public:
+
+        Transaction(TransactionType type, double amount) : id(IDGenerator()), Ttype(type), Amount(amount), Tdate(format("{:%F %T}", chrono::system_clock::now())) {}
+
+        void quickView(void) const { cout << this->Ttype << 't' << this->Amount << endl; }
 
         size_t getID(void) const { return this->id; }
         TransactionType getType(void) const { return this->Ttype; }
@@ -113,7 +117,7 @@ class SavingsAccount : public BankAccount {
 
 
 
-class Checkingaccount : public BankAccount {
+class CheckingAccount : public BankAccount {
 
     private:
 
