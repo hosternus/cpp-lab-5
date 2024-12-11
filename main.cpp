@@ -51,6 +51,11 @@ ostream& operator<<(ostream& out, const TransactionType type) {
     }
 }
 
+long IDGenerator(void) {
+    static long counter = 0;
+    return counter++;
+}
+
 
 
 class Transaction {
