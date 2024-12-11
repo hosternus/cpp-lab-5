@@ -97,10 +97,12 @@ class BankAccount {
         const Currency ACcurrency;
         double Balance;
         vector<Transaction> TransactionsList;
-        const string DateCreated = format("{:%F %T}", chrono::system_clock::now());
+        const string DateCreated;
         bool IsActive = true;
 
     public:
+
+        BankAccount(Currency currency, double balance) : id(IDGenerator()), ACcurrency(currency), Balance(balance), DateCreated(format("{:%F %T}", chrono::system_clock::now())) {}
 
         size_t getID(void) const { return this->id; }
         Currency getCurrency(void) const { return this->ACcurrency; }
@@ -120,7 +122,9 @@ class SavingsAccount : public BankAccount {
 
     public:
 
-        double getAnnualsPercentInfo(void) const { return this-> AnnualPercent; }
+        SavingsAccount(Currency currency, double balance, float annualsP) : BankAccount(currency, balance), AnnualPercent(annualsP) {}
+
+        double getAnnualsPercentInfo(void) const { return this->AnnualPercent; }
 };
 
 
@@ -134,8 +138,10 @@ class CheckingAccount : public BankAccount {
 
     public:
 
-        double getFeeInfo(void) const { return this-> WFee; }
-        size_t FreeWLeft(void) const {return this->FreeWithdrawsLeft; }
+        CheckingAccount(Currency currency, double balance, float fee, size_t freewths) : BankAccount(currency, balance), WFee(fee), FreeWithdrawsLeft(freewths) {}
+
+        double getFeeInfo(void) const { return this->WFee; }
+        size_t FreeWLeft(void) const { return this->FreeWithdrawsLeft; }
 };
 
 
