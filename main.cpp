@@ -147,6 +147,22 @@ class Customer {
 
     public:
 
+        Customer(
+            string name, string surname, long phone, string email, string address, string dateofbirth
+        ) : id(IDGenerator()), Name(name), Surname(surname), Phone(phone), Email(email), Address(address), DateOfBirth(dateofbirth) {}
+
+        long addSAccount() {}
+
+        long addCAccount() {}
+
+        bool removeAccount() {}
+
+        bool printCustomerInfo() const {}
+
+        bool markAsVIP() {}
+
+        bool updateContactInfo() {}
+
         size_t getID(void) const { return this->id; }
         string getName(void) const { return (this->Name + this->Surname); }
         long getPhone(void) const { return this->Phone; }
