@@ -104,6 +104,8 @@ class BankAccount {
 
         BankAccount(Currency currency, double balance) : id(IDGenerator()), ACcurrency(currency), Balance(balance), DateCreated(format("{:%F %T}", chrono::system_clock::now())) {}
 
+        virtual ~BankAccount() {}
+
         size_t getID(void) const { return this->id; }
         Currency getCurrency(void) const { return this->ACcurrency; }
         double getBalance(void) const { return this->Balance; }
