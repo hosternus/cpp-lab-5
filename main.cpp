@@ -138,12 +138,12 @@ class SavingsAccount : public BankAccount {
         double getAnnualsPercentInfo(void) const { return this->AnnualPercent; }
 
         void show(void) const override {
-            cout << "********SAVINGS ACCOUNT********" << endl;
+            cout << "****************SAVINGS ACCOUNT****************" << endl;
             cout << "** " << "Номер: " << this->id << endl;
             cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
             cout << "** " << "Годовые: " << this->AnnualPercent << " (" << this->Balance * this->AnnualPercent / 12.f << this->ACcurrency << " в месяц)" << endl;
             cout << "** " << "Открыт: " << this->DateCreated << endl;
-            cout << "*******************************" << endl;
+            cout << "***********************************************" << endl;
         }
 };
 
@@ -162,6 +162,16 @@ class CheckingAccount : public BankAccount {
 
         double getFeeInfo(void) const { return this->WFee; }
         size_t FreeWLeft(void) const { return this->FreeWithdrawsLeft; }
+
+        void show(void) const override {
+            cout << "***************CHECKING ACCOUNT***************" << endl;
+            cout << "** " << "Номер: " << this->id << endl;
+            cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
+            cout << "** " << "Комиссия: " << this->WFee << "%" << endl;
+            cout << "** " << "Осталось бесплатных выводов: " << this->FreeWithdrawsLeft << endl;        
+            cout << "** " << "Открыт: " << this->DateCreated << endl;
+            cout << "**********************************************" << endl;
+        }
 };
 
 
