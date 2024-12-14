@@ -126,7 +126,6 @@ class BankAccount {
             cout << "********************************" << endl;
         }
 
-// Currency?
         void deposit(double amount) {
             CHECK_ACTIVE_ACCOUNT
             Transaction depObj (TransactionType::Deposit, amount, this->ACcurrency);
@@ -317,6 +316,13 @@ long getIndexByID(size_t id, const vector<Customer*> &clients) {
         return -1;
 }
 
+long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
+        for (size_t i = 0; i < accounts.size(); i++) {
+            if (accounts[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
+
 
 void help(void) {
     cout << "******COMMANDS******" << endl;
@@ -325,8 +331,11 @@ void help(void) {
     cout << "** " << "/addCAccount" << endl;
     cout << "** " << "/addSAccount" << endl;
 
+
+
     cout << "** " << "/customersList" << endl;
     cout << "** " << "/accountsList" << endl;
+    cout << "** " << "/transactionsList" << endl;
 
     cout << "** " << "#exit" << endl;
 }
@@ -413,6 +422,25 @@ int main(void) {
             } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
+
+        if (inpt == "/transactionsList") {
+            long uid, aid;
+            cout << "Введите номер клиента: " << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            cout << "Введите номер счета: " << endl;
+            cin >> aid;
+            if (uid > -1) {
+                vector<BankAccount*> accounts = clients[uid]->getAccounts();
+                aid = getIndexByID(aid, accounts);
+                if (aid > -1) {
+                    for (Transaction i : accounts[aid]->getTransactions()) { i.show(); }
+                } else { cout << "Клиент не имеет счета с этим номером" << endl; }
+            } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "#help") { help(); }
 
         if (inpt == "#exit") { break; }
 
