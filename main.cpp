@@ -3,6 +3,7 @@
 #include <vector>
 #include <format>
 #include <chrono>
+#include <iomanip>
 
 #define HANDLE_ERROR(msg) cerr << (msg) << endl; exit(1);
 #define NoMONEY HANDLE_ERROR("Недостаточно средств")
@@ -316,12 +317,6 @@ long getIndexByID(size_t id, const vector<Customer*> &clients) {
         return -1;
 }
 
-long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
-        for (size_t i = 0; i < accounts.size(); i++) {
-            if (accounts[i]->getID() == id) { return i; }
-        }
-        return -1;
-}
 
 void help(void) {
     cout << "******COMMANDS******" << endl;
@@ -338,6 +333,8 @@ void help(void) {
 
 
 int main(void) {
+
+    cout << setiosflags(ios_base::fixed) << setprecision(0);
 
     help();
     
