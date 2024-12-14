@@ -12,13 +12,14 @@
 using namespace std;
 
 enum Currency {
-    USD,
-    RUB,
-    EUR,
-    AUD,
-    BYN,
-    AED,
-    CNY
+    USD = 0,
+    RUB = 1,
+    EUR = 2,
+    AUD = 3,
+    BYN = 4,
+    AED = 5,
+    CNY = 6,
+    CurrencyCount 
 };
 
 ostream& operator<<(ostream& out, const Currency curr) {
@@ -312,6 +313,9 @@ int main(void) {
 
     cout << "******COMMANDS******" << endl;
     cout << "** " << "/addCustomer" << endl;
+    cout << "** " << "/addCAccount" << endl;
+    cout << "** " << "/addSAccount" << endl;
+    cout << "** " << "#exit" << endl;
     
     string inpt;
     vector<Customer*> clients;
@@ -337,9 +341,47 @@ int main(void) {
             clients.push_back(new Customer(name, surname, phone, email, address, dateofbirth));
             cout << "************NEW************" << endl;
             clients[clients.size() - 1]->showCustomerInfo();
+            continue;
+        }
+
+        if (inpt == "/addCAccount" || inpt == "/addSAccount") {
+            size_t id;
+            cout << "Номер клиента:" << endl;
+            cin >> id;
+            bool flag = false;
+            for (size_t i = 0; i < clients.size(); i++) {
+                if (clients[i]->getID() == id) { id = i; flag = true; break; }
+            }
+            if (flag) {
+                size_t currency;
+                double balance;
+                cout << "*** Введите номер валюты в соотвествии с этим списком ***" << endl;
+                for (size_t cr = 0; cr < Currency::CurrencyCount; cr++) { cout << static_cast<Currency>(cr) << " = " << cr << endl; }
+                cin >> currency;
+                cout << "*** Введите изначальный баланс ***" << endl;
+                cin >> balance;
+                if (inpt == "/addCAccount") {
+                    size_t freew;
+                    float fee;
+                    cout << "*** Введите количество бесплатных выводов ***" << endl;
+                    cin >> freew;
+                    cout << "*** Введите ставвку для вывода средств ***" << endl;
+                    cin >> fee;
+                    clients[id]->addCAccount(static_cast<Currency>(currency), balance, freew, fee);
+                } else if (inpt == "/addSAccount") {
+                    float annuals;
+                    cout << "*** Введи ставку годовых ***" << endl;
+                    cin >> annuals;
+                    clients[id]->addSAccount(static_cast<Currency>(currency), balance, annuals);
+                }
+                cout << "********ГОТОВО********" << endl;
+            } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
         }
 
         if (inpt == "#exit") { break; }
+
+        cout << "*** Нет такой команды ***" << endl;
     }
 
     for (size_t i = 0; i < clients.size(); i++) { delete clients[i]; }
