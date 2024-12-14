@@ -222,22 +222,6 @@ class CheckingAccount : public BankAccount {
 
 
 
-long getIndexByID(size_t id, const vector<Customer*> &clients) {
-        for (size_t i = 0; i < clients.size(); i++) {
-            if (clients[i]->getID() == id) { return i; }
-        }
-        return -1;
-}
-
-long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
-        for (size_t i = 0; i < accounts.size(); i++) {
-            if (accounts[i]->getID() == id) { return i; }
-        }
-        return -1;
-}
-
-
-
 class Customer {
 
     private:
@@ -326,6 +310,19 @@ class Customer {
         vector<BankAccount*> getAccounts(void) const { return this->Accounts; }
 };
 
+long getIndexByID(size_t id, const vector<Customer*> &clients) {
+        for (size_t i = 0; i < clients.size(); i++) {
+            if (clients[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
+
+long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
+        for (size_t i = 0; i < accounts.size(); i++) {
+            if (accounts[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
 
 
 void help(void) {
@@ -335,12 +332,21 @@ void help(void) {
     cout << "** " << "/addCAccount" << endl;
     cout << "** " << "/addSAccount" << endl;
 
+    cout << "** " << "/deactivateAccount" << "endl";
+    cout << "** " << "/removeAccount" << endl;
 
+    cout << "** " << "/deposit" << endl;
+    cout << "** " << "/withdraw" << endl;
+    cout << "** " << "/getProfit" << endl;
+
+    cout << "** " << "/doVIP" << endl;
+    cout << "** " << "/updateCustomerInfo" << endl;
 
     cout << "** " << "/customersList" << endl;
     cout << "** " << "/accountsList" << endl;
     cout << "** " << "/transactionsList" << endl;
 
+    cout << "** " << "#help" << endl;
     cout << "** " << "#exit" << endl;
 }
 
@@ -468,6 +474,42 @@ int main(void) {
                 if (aid > -1) { accounts[aid]->deactivateAccount(); }
                 else { cout << "Клиент не имеет счета с этим номером" << endl; }
              } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "/removeAccount") {
+            long uid;
+            cout << "Введите номер клиента: " << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            if (uid > -1) { 
+                long aid;
+                cout << "Введите номер счета: " << endl;
+                cin >> aid;
+                if (getIndexByID(aid, clients[uid]->getAccounts()) > -1) {
+                    if (clients[uid]->removeAccount(aid)) { cout << "*** Счет удален: " << aid << " ***" << endl; }
+                    else { cout << "*** Ошибка ***" << endl; }
+                } else { cout << "Клиент не имеет счета с этим номером" << endl; }
+             } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "/updateCustomerInfo") {
+            long uid;
+            cout << "Введите номер клиента: " << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            if (uid > -1) {
+                long phone;
+                string email, address;
+                cout << "Введите новый номер телефона: " << endl;
+                cin >> phone;
+                cout << "Введи новый адрес: " << endl;
+                cin >> address;
+                cout << "Введите новую почту: " << endl;
+                cin >> email;
+                clients[uid]->updateContactInfo(phone, email, address);
+            } else { cout << "*** Нет пользователя с таким номером ***" << endl; }
             continue;
         }
 
