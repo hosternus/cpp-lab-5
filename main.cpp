@@ -268,13 +268,14 @@ class Customer {
 
         void showCustomerInfo(void) const {
             cout << "******************CUSTOMER INFO******************" << endl;
-            cout << "** " <<this->Name << " " << this->Surname << endl;
-            cout << "** " << this->Phone << endl;
-            cout << "** " << this->Email << endl;
-            cout << "** " << this->Address << endl;
-            cout << "** " << this->DateOfBirth << endl;
-            cout << "** " << (this->IsVIP?"VIP":"nonVIP") << endl;
-            cout << "** " << this->id << endl;
+            cout << "** " << "Имя: " <<this->Name << " " << this->Surname << endl;
+            cout << "** " << "Фамилия: " << this->Phone << endl;
+            cout << "** " << "Email: " << this->Email << endl;
+            cout << "** " << "Адрес: " << this->Address << endl;
+            cout << "** " << "Дата рождения: " << this->DateOfBirth << endl;
+            cout << "** " << "Статус: " << (this->IsVIP?"VIP":"nonVIP") << endl;
+            cout << "** " << "Количетсво счетов: " << this->Accounts.size() << endl;
+            cout << "** " << "Номер: " << this->id << endl;
             cout << "*************************************************" << endl;
         }
 
@@ -308,14 +309,37 @@ class Customer {
 };
 
 
+long getIndexByID(size_t id, const vector<Customer*> &clients) {
+        for (size_t i = 0; i < clients.size(); i++) {
+            if (clients[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
 
-int main(void) {
+long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
+        for (size_t i = 0; i < accounts.size(); i++) {
+            if (accounts[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
 
+void help(void) {
     cout << "******COMMANDS******" << endl;
+
     cout << "** " << "/addCustomer" << endl;
     cout << "** " << "/addCAccount" << endl;
     cout << "** " << "/addSAccount" << endl;
+
+    cout << "** " << "/customersList" << endl;
+    cout << "** " << "/accountsList" << endl;
+
     cout << "** " << "#exit" << endl;
+}
+
+
+int main(void) {
+
+    help();
     
     string inpt;
     vector<Customer*> clients;
@@ -345,14 +369,11 @@ int main(void) {
         }
 
         if (inpt == "/addCAccount" || inpt == "/addSAccount") {
-            size_t id;
+            long id;
             cout << "Номер клиента:" << endl;
             cin >> id;
-            bool flag = false;
-            for (size_t i = 0; i < clients.size(); i++) {
-                if (clients[i]->getID() == id) { id = i; flag = true; break; }
-            }
-            if (flag) {
+            id = getIndexByID(id, clients);
+            if (id > -1) {
                 size_t currency;
                 double balance;
                 cout << "*** Введите номер валюты в соотвествии с этим списком ***" << endl;
@@ -375,6 +396,23 @@ int main(void) {
                     clients[id]->addSAccount(static_cast<Currency>(currency), balance, annuals);
                 }
                 cout << "********ГОТОВО********" << endl;
+            } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "/customersList") {
+            cout << "** Клиентов: " << clients.size() << endl;
+            for (Customer* i : clients) { i->showCustomerInfo(); }
+            continue;
+        }
+
+        if (inpt == "/accountsList") {
+            long id;
+            cout << "Номер клиента:" << endl;
+            cin >> id;
+            id = getIndexByID(id, clients);
+            if (id > -1) {
+                for (BankAccount* acc : clients[id]->getAccounts()) { acc->show(); }
             } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
