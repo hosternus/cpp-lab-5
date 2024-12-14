@@ -177,7 +177,7 @@ class Customer {
         string Address;
         const string DateOfBirth;
         bool IsVIP = false;
-        vector<BankAccount> Accounts;
+        vector<BankAccount*> Accounts;
 
     public:
 
@@ -228,7 +228,7 @@ class Customer {
         string getAddredd(void) const { return this->Address; }
         string getDateBirth(void) const { return this-> DateOfBirth; }
         bool isVIP(void) const { return this-> IsVIP; }
-        vector<BankAccount> getAccounts(void) const { return this->Accounts; }
+        vector<BankAccount*> getAccounts(void) const { return this->Accounts; }
 };
 
 
