@@ -159,6 +159,7 @@ class SavingsAccount : public BankAccount {
 
         void show(void) const override {
             cout << "****************SAVINGS ACCOUNT****************" << endl;
+            if (!this->IsActive) { cout << "**************DEACTIVATED**************" << endl; }
             cout << "** " << "Номер: " << this->id << endl;
             cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
             cout << "** " << "Годовые: " << this->AnnualPercent << " (" << this->Balance * this->AnnualPercent / 12.f << " " << this->ACcurrency << " в месяц)" << endl;
@@ -209,6 +210,7 @@ class CheckingAccount : public BankAccount {
 
         void show(void) const override {
             cout << "***************CHECKING ACCOUNT***************" << endl;
+            if (!this->IsActive) { cout << "**************DEACTIVATED**************" << endl; }
             cout << "** " << "Номер: " << this->id << endl;
             cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
             cout << "** " << "Комиссия: " << this->WFee << "%" << endl;
@@ -217,6 +219,22 @@ class CheckingAccount : public BankAccount {
             cout << "**********************************************" << endl;
         }
 };
+
+
+
+long getIndexByID(size_t id, const vector<Customer*> &clients) {
+        for (size_t i = 0; i < clients.size(); i++) {
+            if (clients[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
+
+long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
+        for (size_t i = 0; i < accounts.size(); i++) {
+            if (accounts[i]->getID() == id) { return i; }
+        }
+        return -1;
+}
 
 
 
@@ -308,20 +326,6 @@ class Customer {
         vector<BankAccount*> getAccounts(void) const { return this->Accounts; }
 };
 
-
-long getIndexByID(size_t id, const vector<Customer*> &clients) {
-        for (size_t i = 0; i < clients.size(); i++) {
-            if (clients[i]->getID() == id) { return i; }
-        }
-        return -1;
-}
-
-long getIndexByID(size_t id, const vector<BankAccount*> &accounts) {
-        for (size_t i = 0; i < accounts.size(); i++) {
-            if (accounts[i]->getID() == id) { return i; }
-        }
-        return -1;
-}
 
 
 void help(void) {
@@ -437,6 +441,33 @@ int main(void) {
                     for (Transaction i : accounts[aid]->getTransactions()) { i.show(); }
                 } else { cout << "Клиент не имеет счета с этим номером" << endl; }
             } else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "/doVIP") {
+            long uid;
+            cout << "Введите номер клиента: " << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            if (uid > -1) { clients[uid]->markAsVIP(); }
+            else { cout << "*** Нет такого клиента ***" << endl; }
+            continue;
+        }
+
+        if (inpt == "/deactivateAccount") {
+            long uid;
+            cout << "Введите номер клиента: " << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            if (uid > -1) { 
+                long aid;
+                cout << "Введите номер счета: " << endl;
+                cin >> aid;
+                vector<BankAccount*> accounts = clients[uid]->getAccounts();
+                aid = getIndexByID(aid, accounts);
+                if (aid > -1) { accounts[aid]->deactivateAccount(); }
+                else { cout << "Клиент не имеет счета с этим номером" << endl; }
+             } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
 
