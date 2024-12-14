@@ -121,6 +121,14 @@ class BankAccount {
             cout << "*** " << "Аккаунт " << this->id << " деактивирован" << " ***" << endl;
             cout << "********************************" << endl;
         }
+
+// Currency?
+        void deposit(double amount) {
+            CHECK_ACTIVE_ACCOUNT
+            Transaction depObj (TransactionType::Deposit, amount, this->ACcurrency);
+            this->Balance += amount;
+            this->TransactionsList.push_back(depObj);
+        }
 };
 
 
@@ -141,7 +149,7 @@ class SavingsAccount : public BankAccount {
             cout << "****************SAVINGS ACCOUNT****************" << endl;
             cout << "** " << "Номер: " << this->id << endl;
             cout << "** " << "Баланс: " << this->Balance << " " << this->ACcurrency << endl;
-            cout << "** " << "Годовые: " << this->AnnualPercent << " (" << this->Balance * this->AnnualPercent / 12.f << this->ACcurrency << " в месяц)" << endl;
+            cout << "** " << "Годовые: " << this->AnnualPercent << " (" << this->Balance * this->AnnualPercent / 12.f << " " << this->ACcurrency << " в месяц)" << endl;
             cout << "** " << "Открыт: " << this->DateCreated << endl;
             cout << "***********************************************" << endl;
         }
