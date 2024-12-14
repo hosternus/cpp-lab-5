@@ -100,6 +100,8 @@ class BankAccount {
         const string DateCreated;
         bool IsActive = true;
 
+        bool withdrawAllowed(double amount) { return (this->Balance - amount) >= 0; }
+
     public:
 
         BankAccount(Currency currency, double balance) : id(IDGenerator()), ACcurrency(currency), Balance(balance), DateCreated(format("{:%F %T}", chrono::system_clock::now())) {}
@@ -129,6 +131,15 @@ class BankAccount {
             this->Balance += amount;
             this->TransactionsList.push_back(depObj);
         }
+
+        virtual void withdraw(double amount) {
+            CHECK_ACTIVE_ACCOUNT
+            if (this->withdrawAllowed(amount)) {
+                Transaction wthObj (TransactionType::Withdraw, amount, this->ACcurrency);
+                this->Balance -= amount;
+                this->TransactionsList.push_back(wthObj);
+            } else { NoMONEY }
+        }
 };
 
 
@@ -153,6 +164,14 @@ class SavingsAccount : public BankAccount {
             cout << "** " << "Открыт: " << this->DateCreated << endl;
             cout << "***********************************************" << endl;
         }
+
+        void doProfit(void) {
+            CHECK_ACTIVE_ACCOUNT
+            double amount = this->Balance * AnnualPercent;
+            Transaction annObj (TransactionType::AnnualPercents, amount, this->ACcurrency);
+            this->Balance += amount;
+            this->TransactionsList.push_back(annObj);
+        }
 };
 
 
@@ -170,6 +189,22 @@ class CheckingAccount : public BankAccount {
 
         double getFeeInfo(void) const { return this->WFee; }
         size_t FreeWLeft(void) const { return this->FreeWithdrawsLeft; }
+
+        void withdraw(double amount) override {
+            CHECK_ACTIVE_ACCOUNT
+            if (this->withdrawAllowed(amount)) {
+                Transaction wthObj (TransactionType::Withdraw, amount, this->ACcurrency);
+                if (FreeWithdrawsLeft > 0) {
+                    this->Balance -= amount;
+                    FreeWithdrawsLeft--;
+                } else {
+                    Transaction feeObj (TransactionType::Fee, amount * WFee, this->ACcurrency);
+                    this->Balance -= amount * ( 1 + WFee );
+                    this->TransactionsList.push_back(feeObj);
+                }
+                this->TransactionsList.push_back(wthObj);
+            } else { NoMONEY }
+        }
 
         void show(void) const override {
             cout << "***************CHECKING ACCOUNT***************" << endl;
