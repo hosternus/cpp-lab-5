@@ -238,11 +238,32 @@ class Customer {
             string name, string surname, long phone, string email, string address, string dateofbirth
         ) : id(IDGenerator()), Name(name), Surname(surname), Phone(phone), Email(email), Address(address), DateOfBirth(dateofbirth) {}
 
-        long addSAccount() {}
+        ~Customer() {
+            for (size_t i = 0; i < Accounts.size(); i++) {
+                delete Accounts[i];
+            }
+        }
 
-        long addCAccount() {}
+        size_t addSAccount(Currency currency, double balance, float annuals) {
+            Accounts.push_back(new SavingsAccount(currency, balance, annuals));
+            return Accounts[Accounts.size() - 1]->getID();
+        }
 
-        bool removeAccount() {}
+        size_t addCAccount(Currency currency, double balance, size_t freeWithdraws, float fee) {
+            Accounts.push_back(new CheckingAccount(currency, balance, fee, freeWithdraws));
+            return Accounts[Accounts.size() - 1]->getID();
+        }
+
+        bool removeAccount(size_t id) {
+            for (size_t i = 0; i < Accounts.size(); i++) {
+                if (Accounts[i]->getID() == id) {
+                    delete Accounts[i];
+                    Accounts.erase(Accounts.begin() + i);
+                    return true;
+                }
+            }
+            return false;
+        }
 
         void showCustomerInfo(void) const {
             cout << "******************CUSTOMER INFO******************" << endl;
@@ -252,6 +273,7 @@ class Customer {
             cout << "** " << this->Address << endl;
             cout << "** " << this->DateOfBirth << endl;
             cout << "** " << (this->IsVIP?"VIP":"nonVIP") << endl;
+            cout << "** " << this->id << endl;
             cout << "*************************************************" << endl;
         }
 
@@ -286,4 +308,40 @@ class Customer {
 
 
 
-int main(void) { return 0; }
+int main(void) {
+
+    cout << "******COMMANDS******" << endl;
+    cout << "** " << "/addCustomer" << endl;
+    
+    string inpt;
+    vector<Customer*> clients;
+    
+    while (true) {
+        cin >> inpt;
+
+        if (inpt == "/addCustomer") {
+            string name, surname, email, address, dateofbirth;
+            long phone;
+            cout << "** Имя:" << endl;
+            cin >> name;
+            cout << "** Фамилия:" << endl;
+            cin >> surname;
+            cout << "** Почта:" << endl;
+            cin >> email;
+            cout << "** Aдрес:" << endl;
+            cin >> address;
+            cout << "** Телефон:" << endl;
+            cin >> phone;
+            cout << "** Дата рождения:" << endl;
+            cin >> dateofbirth;
+            clients.push_back(new Customer(name, surname, phone, email, address, dateofbirth));
+            cout << "************NEW************" << endl;
+            clients[clients.size() - 1]->showCustomerInfo();
+        }
+
+        if (inpt == "#exit") { break; }
+    }
+
+    for (size_t i = 0; i < clients.size(); i++) { delete clients[i]; }
+
+    return 0; }
