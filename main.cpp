@@ -513,6 +513,12 @@ int main(void) {
             continue;
         }
 
+        if (inpt == "/deposit") {}
+
+        if (inpt == "/withdraw") {}
+
+        if (inpt == "/getProfit") {}
+
         if (inpt == "#help") { help(); }
 
         if (inpt == "#exit") { break; }
