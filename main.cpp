@@ -131,6 +131,7 @@ class BankAccount {
             Transaction depObj (TransactionType::Deposit, amount, this->ACcurrency);
             this->Balance += amount;
             this->TransactionsList.push_back(depObj);
+            cout << "*** Счет пополнен на: " << amount << ' ' << this->ACcurrency << " ***";
         }
 
         virtual void withdraw(double amount) {
@@ -139,6 +140,7 @@ class BankAccount {
                 Transaction wthObj (TransactionType::Withdraw, amount, this->ACcurrency);
                 this->Balance -= amount;
                 this->TransactionsList.push_back(wthObj);
+                cout << "*** Снятие: " << amount << ' ' << this->ACcurrency << " ***" << endl;
             } else { NoMONEY }
         }
 
@@ -201,13 +203,16 @@ class CheckingAccount : public BankAccount {
             CHECK_ACTIVE_ACCOUNT
             if (this->withdrawAllowed(amount)) {
                 Transaction wthObj (TransactionType::Withdraw, amount, this->ACcurrency);
+                cout << "*** Снятие: " << amount << ' ' << this->ACcurrency << " ***" << endl;
                 if (FreeWithdrawsLeft > 0) {
                     this->Balance -= amount;
                     FreeWithdrawsLeft--;
+                    cout << "*** Осталось бесплатных выводов: " << this->FreeWithdrawsLeft << " ***" << endl;
                 } else {
                     Transaction feeObj (TransactionType::Fee, amount * WFee, this->ACcurrency);
                     this->Balance -= amount * ( 1 + WFee );
                     this->TransactionsList.push_back(feeObj);
+                    cout << "*** Комиссия: " << amount * WFee << ' ' << this->ACcurrency << " ***" << endl;
                 }
                 this->TransactionsList.push_back(wthObj);
             } else { NoMONEY }
@@ -363,6 +368,7 @@ void help(void) {
 #define NoUSER cout << "*** Нет такого клиента ***" << endl;
 #define NoACC cout << "*** Клиент не имеет счета с этим номером ***" << endl;
 #define NEW cout << "************NEW***********" << endl;
+#define AMOUNT cout << "** Введите сумму:" << endl; cin >> amount;
 
 
 int main(void) {
@@ -384,7 +390,7 @@ int main(void) {
 
 // Accounts
     size_t currency = 0, freew = 0;
-    double balance = 0;
+    double balance = 0, amount = 0;
     float fee = 0, annuals = 0;
     
 
@@ -506,11 +512,29 @@ int main(void) {
         }
 
         if (inpt == "/deposit") {
-
+            ASKcustomer
+            if (uid > -1) {
+                vector<BankAccount*> accounts = clients[uid]->getAccounts();
+                ASKaccount
+                aid = getIndexByID(aid, accounts);
+                if (aid > -1) {
+                    AMOUNT
+                    accounts[aid]->deposit(amount);
+                } else { NoACC }
+            } else {NoUSER}
         }
 
         if (inpt == "/withdraw") {
-
+            ASKcustomer
+            if (uid > -1) {
+                ASKaccount
+                vector<BankAccount*> accounts = clients[uid]->getAccounts();
+                aid = getIndexByID(aid, accounts);
+                if (aid > -1) {
+                    AMOUNT
+                    accounts[aid]->withdraw(amount);
+                } else { NoACC }
+            } else { NoUSER }
         }
 
         if (inpt == "/getProfit") {
