@@ -141,6 +141,8 @@ class BankAccount {
                 this->TransactionsList.push_back(wthObj);
             } else { NoMONEY }
         }
+
+        virtual void doProfit(void) { cout << "*** Счет не сберегательный ***" << endl; }
 };
 
 
@@ -167,12 +169,15 @@ class SavingsAccount : public BankAccount {
             cout << "***********************************************" << endl;
         }
 
-        void doProfit(void) {
+        void doProfit(void) override {
             CHECK_ACTIVE_ACCOUNT
             double amount = this->Balance * AnnualPercent;
             Transaction annObj (TransactionType::AnnualPercents, amount, this->ACcurrency);
             this->Balance += amount;
             this->TransactionsList.push_back(annObj);
+            cout << "***********ANNUALS***********" << endl;
+            cout << "** " << "Начислено годовых: " << amount << ' ' << this->ACcurrency << endl;
+            cout << "*****************************" << endl;
         }
 };
 
@@ -257,15 +262,17 @@ class Customer {
             return Accounts[Accounts.size() - 1]->getID();
         }
 
-        bool removeAccount(size_t id) {
+        void removeAccount(size_t id) {
             for (size_t i = 0; i < Accounts.size(); i++) {
                 if (Accounts[i]->getID() == id) {
                     delete Accounts[i];
                     Accounts.erase(Accounts.begin() + i);
-                    return true;
+                    cout << "**********DELETION**********" << endl;
+                    cout << "** " << "Счет удален: " << id << endl;
+                    cout << "****************************" << endl;
+                    return;
                 }
             }
-            return false;
         }
 
         void showCustomerInfo(void) const {
@@ -386,28 +393,28 @@ int main(void) {
 
         if (inpt == "/addCAccount" || inpt == "/addSAccount") {
             long id;
-            cout << "Номер клиента:" << endl;
+            cout << "** Номер клиента:" << endl;
             cin >> id;
             id = getIndexByID(id, clients);
             if (id > -1) {
                 size_t currency;
                 double balance;
-                cout << "*** Введите номер валюты в соотвествии с этим списком ***" << endl;
+                cout << "** Введите номер валюты в соотвествии с этим списком:" << endl;
                 for (size_t cr = 0; cr < Currency::CurrencyCount; cr++) { cout << static_cast<Currency>(cr) << " = " << cr << endl; }
                 cin >> currency;
-                cout << "*** Введите изначальный баланс ***" << endl;
+                cout << "** Введите изначальный баланс:" << endl;
                 cin >> balance;
                 if (inpt == "/addCAccount") {
                     size_t freew;
                     float fee;
-                    cout << "*** Введите количество бесплатных выводов ***" << endl;
+                    cout << "** Введите количество бесплатных выводов:" << endl;
                     cin >> freew;
-                    cout << "*** Введите ставвку для вывода средств ***" << endl;
+                    cout << "** Введите ставвку для вывода средств:" << endl;
                     cin >> fee;
                     clients[id]->addCAccount(static_cast<Currency>(currency), balance, freew, fee);
                 } else if (inpt == "/addSAccount") {
                     float annuals;
-                    cout << "*** Введи ставку годовых ***" << endl;
+                    cout << "** Введи ставку годовых:" << endl;
                     cin >> annuals;
                     clients[id]->addSAccount(static_cast<Currency>(currency), balance, annuals);
                 }
@@ -424,7 +431,7 @@ int main(void) {
 
         if (inpt == "/accountsList") {
             long id;
-            cout << "Номер клиента:" << endl;
+            cout << "** Номер клиента:" << endl;
             cin >> id;
             id = getIndexByID(id, clients);
             if (id > -1) {
@@ -435,24 +442,24 @@ int main(void) {
 
         if (inpt == "/transactionsList") {
             long uid, aid;
-            cout << "Введите номер клиента: " << endl;
+            cout << "** Введите номер клиента:" << endl;
             cin >> uid;
             uid = getIndexByID(uid, clients);
-            cout << "Введите номер счета: " << endl;
+            cout << "** Введите номер счета:" << endl;
             cin >> aid;
             if (uid > -1) {
                 vector<BankAccount*> accounts = clients[uid]->getAccounts();
                 aid = getIndexByID(aid, accounts);
                 if (aid > -1) {
                     for (Transaction i : accounts[aid]->getTransactions()) { i.show(); }
-                } else { cout << "Клиент не имеет счета с этим номером" << endl; }
+                } else { cout << "*** Клиент не имеет счета с этим номером ***" << endl; }
             } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
 
         if (inpt == "/doVIP") {
             long uid;
-            cout << "Введите номер клиента: " << endl;
+            cout << "** Введите номер клиента:" << endl;
             cin >> uid;
             uid = getIndexByID(uid, clients);
             if (uid > -1) { clients[uid]->markAsVIP(); }
@@ -462,62 +469,80 @@ int main(void) {
 
         if (inpt == "/deactivateAccount") {
             long uid;
-            cout << "Введите номер клиента: " << endl;
+            cout << "** Введите номер клиента:" << endl;
             cin >> uid;
             uid = getIndexByID(uid, clients);
             if (uid > -1) { 
                 long aid;
-                cout << "Введите номер счета: " << endl;
+                cout << "** Введите номер счета:" << endl;
                 cin >> aid;
                 vector<BankAccount*> accounts = clients[uid]->getAccounts();
                 aid = getIndexByID(aid, accounts);
                 if (aid > -1) { accounts[aid]->deactivateAccount(); }
-                else { cout << "Клиент не имеет счета с этим номером" << endl; }
+                else { cout << "*** Клиент не имеет счета с этим номером ***" << endl; }
              } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
 
         if (inpt == "/removeAccount") {
             long uid;
-            cout << "Введите номер клиента: " << endl;
+            cout << "** Введите номер клиента:" << endl;
             cin >> uid;
             uid = getIndexByID(uid, clients);
             if (uid > -1) { 
                 long aid;
-                cout << "Введите номер счета: " << endl;
+                cout << "** Введите номер счета:" << endl;
                 cin >> aid;
                 if (getIndexByID(aid, clients[uid]->getAccounts()) > -1) {
-                    if (clients[uid]->removeAccount(aid)) { cout << "*** Счет удален: " << aid << " ***" << endl; }
-                    else { cout << "*** Ошибка ***" << endl; }
-                } else { cout << "Клиент не имеет счета с этим номером" << endl; }
+                    clients[uid]->removeAccount(aid);
+                } else { cout << "*** Клиент не имеет счета с этим номером ***" << endl; }
              } else { cout << "*** Нет такого клиента ***" << endl; }
             continue;
         }
 
         if (inpt == "/updateCustomerInfo") {
             long uid;
-            cout << "Введите номер клиента: " << endl;
+            cout << "** Введите номер клиента:" << endl;
             cin >> uid;
             uid = getIndexByID(uid, clients);
             if (uid > -1) {
                 long phone;
                 string email, address;
-                cout << "Введите новый номер телефона: " << endl;
+                cout << "** Введите новый номер телефона:" << endl;
                 cin >> phone;
-                cout << "Введи новый адрес: " << endl;
+                cout << "** Введи новый адрес:" << endl;
                 cin >> address;
-                cout << "Введите новую почту: " << endl;
+                cout << "** Введите новую почту:" << endl;
                 cin >> email;
                 clients[uid]->updateContactInfo(phone, email, address);
             } else { cout << "*** Нет пользователя с таким номером ***" << endl; }
             continue;
         }
 
-        if (inpt == "/deposit") {}
+        if (inpt == "/deposit") {
 
-        if (inpt == "/withdraw") {}
+        }
 
-        if (inpt == "/getProfit") {}
+        if (inpt == "/withdraw") {
+
+        }
+
+        if (inpt == "/getProfit") {
+            long uid;
+            cout << "** Введите номер клиента:" << endl;
+            cin >> uid;
+            uid = getIndexByID(uid, clients);
+            if (uid > -1) { 
+                long aid;
+                cout << "** Введите номер счета:" << endl;
+                cin >> aid;
+                vector<BankAccount*> accounts = clients[uid]->getAccounts();
+                aid = getIndexByID(aid, accounts);
+                if (aid > -1) {
+                    accounts[aid]->doProfit();
+                } else { cout << "*** Клиент не имеет счета с этим номером ***" << endl; }
+            } else { cout << "*** Нет такого клиента ***" << endl; }
+        }
 
         if (inpt == "#help") { help(); }
 
